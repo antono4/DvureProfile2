@@ -7,6 +7,10 @@
 
 window.SITE = {
     hero: {
+        photo: {
+            src: 'assets/img/avatar.jpg',
+            alt: 'Antono, Full Stack Web Developer and IT Network Engineer',
+        },
         chips: [
             'HTML5',
             'Tailwind',
@@ -67,38 +71,57 @@ window.SITE = {
         {
             icon: '01',
             title: 'Web Development & AI',
-            text: 'Full-stack development and modern AI integration across multiple frameworks. Proficiency 92% - HTML5, Tailwind, JavaScript, PHP, OpenAI, Three.js.',
+            text: 'Full-stack development and modern AI integration across multiple frameworks.',
+            level: 92,
+            tags: ['HTML5', 'Tailwind', 'JavaScript', 'PHP', 'OpenAI', 'Three.js'],
         },
         {
             icon: '02',
             title: 'Networking & Security',
-            text: 'Enterprise network infrastructure, security risk assessment and monitoring. Proficiency 88% - CCNA, cyber security, monitoring, structured cabling.',
+            text: 'Enterprise network infrastructure, security risk assessment and monitoring.',
+            level: 88,
+            tags: ['CCNA', 'Cyber Security', 'Monitoring', 'Cabling'],
         },
         {
             icon: '03',
             title: 'Databases & Systems',
-            text: 'Database design, analysis, and full hardware and software systems maintenance. Proficiency 85% - MySQL, SQL Server, analysis, audits.',
+            text: 'Database design, analysis, and full hardware and software systems maintenance.',
+            level: 85,
+            tags: ['MySQL', 'SQL Server', 'Analysis', 'Audits'],
         },
         {
             icon: '04',
             title: 'Management',
-            text: 'IT operations, technical support leadership and asset management systems. Proficiency 90% - IT operations, support, assets, SPA.',
+            text: 'IT operations, technical support leadership and asset management systems.',
+            level: 90,
+            tags: ['IT Operations', 'Support', 'Assets', 'SPA'],
         },
     ],
 
-    achievements: [
+    credentials: [
         {
-            title: 'Academic background',
-            items: [
-                "<strong>Master's Degree - Manajemen Informatika.</strong> Advanced study in information systems management, focusing on strategic IT governance and modern software engineering practices.",
-                '<strong>Diploma (D3) - Engineering (Computer / Telecommunication).</strong> Three-year diploma covering computer engineering and telecommunication fundamentals, from networking to embedded systems. LP3I Cikarang, graduated 2010.',
-            ],
+            kind: "Master's Degree",
+            field: 'Manajemen Informatika',
+            issuer: 'Postgraduate',
+            period: 'Recipient: Antono',
+            detail: 'Advanced study in information systems management, focusing on strategic IT governance and modern software engineering practices.',
+            seal: 'M',
         },
         {
-            title: 'Certifications',
-            items: [
-                '<strong>CCNA - Cisco Certified Network Associate.</strong> Industry-recognized certification validating expertise in networking fundamentals, routing, switching and network security. Issued by LP3I.',
-            ],
+            kind: 'Diploma (D3)',
+            field: 'Engineering (Computer / Telecommunication)',
+            issuer: 'LP3I Cikarang',
+            period: 'Graduated 2010',
+            detail: 'Three-year diploma covering computer engineering and telecommunication fundamentals, from networking to embedded systems.',
+            seal: 'D3',
+        },
+        {
+            kind: 'CCNA',
+            field: 'Cisco Certified Network Associate',
+            issuer: 'Issued by LP3I',
+            period: 'Networking',
+            detail: 'Industry-recognized certification validating expertise in networking fundamentals, routing, switching and network security.',
+            seal: 'C',
         },
     ],
 
@@ -206,24 +229,28 @@ window.SITE = {
         },
         {
             name: 'Awan Rent Car',
+            note: 'Private project - not publicly available',
             category: 'Web App',
             proves: 'Premium web app template with a 10-vehicle fleet gallery and booking submission tools linked directly to the WhatsApp API.',
             tags: ['Web App', 'WhatsApp API'],
         },
         {
             name: 'BrainMetrics Elite',
+            note: 'Private project - not publicly available',
             category: 'Web App',
             proves: 'Cognitive assessment app with a 50-question test bank across five intelligence domains, radar chart outputs and downloadable PDF reports.',
             tags: ['Assessment', 'Data Viz', 'PDF'],
         },
         {
             name: 'MRP Simulation',
+            note: 'Private project - not publicly available',
             category: 'Web App',
             proves: 'Material Requirements Planning app with multi-warehouse inventory locations and integrated QR code scanning for stock tracking.',
             tags: ['Inventory', 'QR Scanning'],
         },
         {
             name: 'IT Asset Management',
+            note: 'Private project - not publicly available',
             category: 'Web App',
             proves: 'Custom, fast single-page CRUD app configured for database connections to track and manage organizational IT assets efficiently.',
             tags: ['SPA', 'CRUD', 'Asset Tracking'],

@@ -38,14 +38,15 @@ page rebuilds itself from it.
 
 | Key | What it controls |
 | --- | --- |
+| `hero.photo` | Hero portrait: `{ src, alt }` |
 | `hero.chips` | Technology pills under the headline |
 | `hero.stats` | The "career at a glance" numbers |
 | `profile` | Intro paragraphs and bullet list |
 | `contacts` | Contact cards (email, GitHub, ORCID, …) |
-| `value` | "Value for an employer" cards |
-| `achievements` | Achievement groups |
+| `value` | Expertise cards; add `level` (0-100) for a proficiency bar and `tags` for pills |
+| `credentials` | Education and certification cards (`kind`, `field`, `issuer`, `period`, `detail`, `seal`) |
 | `experience` | Timeline entries, with optional `tags` |
-| `projects` | Project cards; `category` drives the filter buttons |
+| `projects` | Project cards; `category` drives the filter buttons, `note` is shown when `url` is absent |
 | `stack` | Technology groups |
 
 Two things worth knowing:
@@ -54,7 +55,7 @@ Two things worth knowing:
   project and its filter button appears automatically; remove the last project in
   a category and the button disappears. There is no separate list to keep in sync.
 - **Text is treated as text.** A small whitelist (`<strong>`, `<em>`, `<code>`,
-  `<br>`, `<a href>`) is allowed inside `profile`, `achievements` and
+  `<br>`, `<a href>`) is allowed inside `profile`, `credentials` and
   `projects[].proves` so you can emphasise a word. Anything else — including
   `<script>`, `<img>` and inline `on*` handlers — is stripped rather than
   executed, so a stray tag in the data file cannot break or hijack the page.
@@ -64,9 +65,18 @@ To change the accent colours, edit the tokens at the top of
 is a separate token block under `html[data-theme='light']`. Dark is the default;
 the toggle in the top bar switches to light and remembers the choice.
 
-Replace `assets/img/avatar.svg` and `assets/img/favicon.svg` with your own images
-(keep the same filenames, or update the two `<link>`/`<meta>` tags in
-`index.html`).
+### Images
+
+| File | Used for |
+| --- | --- |
+| `assets/img/avatar.jpg` | Hero portrait (square, shown as a circle) |
+| `assets/img/og-cover.jpg` | Social preview when the link is shared (1200x630) |
+| `assets/img/favicon.svg` | Browser tab icon |
+
+Replace them with your own, keeping the filenames. If you deploy to a different
+URL, update the `canonical`, `og:url`, `og:image` and `twitter:image` tags near
+the top of `index.html` — social crawlers require **absolute** URLs, and the
+preview image must be PNG or JPEG (an SVG will not render).
 
 ## Deploy to GitHub Pages
 
@@ -85,8 +95,10 @@ a repository subfolder without changes.
   links instead of an empty page.
 - Keyboard accessible: visible focus rings, a skip link, and the theme toggle is
   a real `<button>` with an accessible label.
-- Prints cleanly: chrome, filters and decorative layers are hidden, and content
-  is switched to dark-on-white.
+- **Download CV** triggers the browser's print dialog; choosing "Save as PDF"
+  produces a clean CV. The print stylesheet hides the chrome, filters and
+  decorative layers, keeps job and credential entries from splitting across
+  pages, and appends the URL after every link so a printed copy stays usable.
 - No tracking, no cookies, and no external requests at all: the Inter and
   JetBrains Mono web fonts are self-hosted under `assets/fonts/` and declared in
   `assets/css/fonts.css`. The page works fully offline.

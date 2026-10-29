@@ -80,6 +80,26 @@
 
     /* ---------- renderers ---------- */
 
+    const renderHeroPhoto = () => {
+        const host = $('[data-hero-photo]');
+        const cfg = SITE.hero?.photo;
+        if (!host || !cfg?.src) return;
+        const img = document.createElement('img');
+        img.className = 'hero__photo';
+        img.src = cfg.src;
+        img.alt = cfg.alt || '';
+        img.width = 400;
+        img.height = 400;
+        img.loading = 'eager';
+        img.decoding = 'async';
+        // If the photo fails to load, fall back to the monogram mark rather
+        // than showing a broken-image icon.
+        img.addEventListener('error', () => {
+            host.replaceChildren(el('span', 'hero__photo-fallback', 'A'));
+        });
+        host.replaceChildren(img);
+    };
+
     const renderChips = () => {
         const host = $('[data-chips]');
         if (!host) return;
@@ -144,22 +164,60 @@
                 card.appendChild(el('div', 'card__icon', item.icon || '◆'));
                 card.appendChild(el('h3', null, item.title));
                 card.appendChild(el('p', null, item.text));
+
+                if (item.tags?.length) {
+                    const tags = el('div', 'tags');
+                    item.tags.forEach((tag) => tags.appendChild(el('span', 'tag', tag)));
+                    card.appendChild(tags);
+                }
+
+                // Proficiency bar. The width is set from data and the fill is
+                // animated by CSS once the card is revealed, so it must start
+                // at 0 and be driven by the --level custom property.
+                if (typeof item.level === 'number') {
+                    const meter = el('div', 'meter');
+                    meter.setAttribute('role', 'img');
+                    meter.setAttribute(
+                        'aria-label',
+                        `${item.title}: ${item.level} percent proficiency`,
+                    );
+                    const bar = el('div', 'meter__bar');
+                    bar.style.setProperty('--level', `${item.level}%`);
+                    const fill = el('div', 'meter__fill');
+                    bar.appendChild(fill);
+                    const label = el('span', 'meter__value', `${item.level}%`);
+                    meter.appendChild(el('span', 'meter__label', 'Proficiency'));
+                    meter.appendChild(label);
+                    meter.appendChild(bar);
+                    card.appendChild(meter);
+                }
                 return card;
             }),
         );
     };
 
-    const renderAchievements = () => {
-        const host = $('[data-achievements]');
+    const renderCredentials = () => {
+        const host = $('[data-credentials]');
         if (!host) return;
         host.replaceChildren(
-            ...(SITE.achievements || []).map((group) => {
-                const wrap = el('article', 'group');
-                wrap.appendChild(el('h3', null, group.title));
-                wrap.appendChild(
-                    list(group.items, null, (item) => el('li', null, safeHtml(item))),
-                );
-                return wrap;
+            ...(SITE.credentials || []).map((item) => {
+                const card = el('article', 'credential');
+
+                const seal = el('div', 'credential__seal', item.seal || '★');
+                seal.setAttribute('aria-hidden', 'true');
+                card.appendChild(seal);
+
+                const body = el('div', 'credential__body');
+                body.appendChild(el('p', 'credential__kind', item.kind));
+                body.appendChild(el('h3', null, item.field));
+                const meta = el('p', 'credential__meta');
+                meta.appendChild(el('strong', null, item.issuer));
+                if (item.period) meta.appendChild(el('span', null, ` · ${item.period}`));
+                body.appendChild(meta);
+                body.appendChild(el('p', 'credential__detail', item.detail));
+                card.appendChild(body);
+
+                return card;
             }),
         );
     };
@@ -240,6 +298,10 @@
             node.appendChild(head);
 
             node.appendChild(el('p', 'project__body', project.proves));
+
+            if (!project.url && project.note) {
+                node.appendChild(el('p', 'project__note', project.note));
+            }
 
             if (project.tags?.length) {
                 const tags = el('div', 'tags');
@@ -363,7 +425,7 @@
 
     const reveal = () => {
         const targets = $$(
-            '.section__head, .prose, .contact-grid, .card, .group, .timeline > li, .project, .stack-group, .cta, .stats',
+            '.section__head, .prose, .contact-grid, .card, .credential, .timeline > li, .project, .stack-group, .cta, .stats',
         );
         if (!('IntersectionObserver' in window)) return;
 
@@ -383,13 +445,20 @@
         });
     };
 
+    const cvButton = () => {
+        const button = $('[data-print-cv]');
+        if (!button) return;
+        button.addEventListener('click', () => window.print());
+    };
+
     /* ---------- boot ---------- */
+    renderHeroPhoto();
     renderChips();
     renderStats();
     renderProfile();
     renderContacts();
     renderValue();
-    renderAchievements();
+    renderCredentials();
     renderExperience();
     projectsSection();
     renderStack();
@@ -402,4 +471,5 @@
     spotlight();
     navHighlight();
     reveal();
+    cvButton();
 })();
