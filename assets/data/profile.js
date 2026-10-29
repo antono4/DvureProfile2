@@ -41,8 +41,8 @@ window.SITE = {
     contacts: [
         {
             label: 'Email',
-            value: 'dvurechenskysoft@gmail.com',
-            href: 'mailto:dvurechenskysoft@gmail.com',
+            value: 'antonockr1@gmail.com',
+            href: 'mailto:antonockr1@gmail.com',
         },
         { label: 'Email', value: 'nikolay@dvurechensky.pro', href: 'mailto:nikolay@dvurechensky.pro' },
         { label: 'GitHub', value: 'github.com/Antono4', href: 'https://github.com/Antono4' },
