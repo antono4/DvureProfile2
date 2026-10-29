@@ -169,7 +169,7 @@ window.SITE = {
             tags: ['Software Development', 'Databases'],
         },
         {
-            company: 'PT Gunung Garuda (Gunung Steel Group)',
+            company: 'PT Baja Nusantara',
             role: 'IT Staff',
             period: 'Mar 2013 - Feb 2014',
             points: [],
