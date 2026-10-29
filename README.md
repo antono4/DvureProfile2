@@ -96,9 +96,14 @@ a repository subfolder without changes.
 - Keyboard accessible: visible focus rings, a skip link, and the theme toggle is
   a real `<button>` with an accessible label.
 - **Download CV** triggers the browser's print dialog; choosing "Save as PDF"
-  produces a clean CV. The print stylesheet hides the chrome, filters and
-  decorative layers, keeps job and credential entries from splitting across
-  pages, and appends the URL after every link so a printed copy stays usable.
+  produces a clean, roughly seven-page CV. The print stylesheet switches to
+  dark-on-white, hides the chrome, filters, tech pills and counters, keeps job
+  and credential entries from splitting across pages, and appends the URL after
+  every link so a printed copy stays usable.
+
+  Note the `@media print` rule that forces `.reveal` to `opacity: 1`. Scroll
+  animations start elements invisible and JavaScript reveals them on scroll, so
+  without that override everything below the fold prints as a blank page.
 - No tracking, no cookies, and no external requests at all: the Inter and
   JetBrains Mono web fonts are self-hosted under `assets/fonts/` and declared in
   `assets/css/fonts.css`. The page works fully offline.

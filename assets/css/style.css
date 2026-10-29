@@ -1438,6 +1438,16 @@ html[data-theme='light'] .meter__bar {
 }
 
 @media print {
+    /* Scroll-reveal starts at opacity 0 and is switched on by
+       IntersectionObserver. Anything below the fold when the print dialog
+       opens therefore prints as a blank page, so force it visible here. */
+    .reveal,
+    .reveal.is-visible {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+
     body::before,
     body::after,
     .topbar,
@@ -1487,6 +1497,13 @@ html[data-theme='light'] .meter__bar {
         display: none !important;
     }
 
+    /* The tech pills repeat the Skills section, and the counters are
+       decorative; both just push the CV onto extra sheets. */
+    .chips,
+    .stats {
+        display: none !important;
+    }
+
     /* Bars are meaningless in monochrome print; show the number only. */
     .meter__fill {
         width: var(--level, 0%) !important;
@@ -1523,12 +1540,65 @@ html[data-theme='light'] .meter__bar {
         break-inside: avoid;
     }
 
+    /* Compact the layout so a full CV does not run to a dozen sheets. */
+    body {
+        font-size: 13.5px;
+        line-height: 1.45;
+    }
+
     .section {
-        padding: 20px 0;
-        break-inside: avoid;
+        padding: 12px 0;
     }
 
     .section__title {
         break-after: avoid;
+        font-size: 20px;
+    }
+
+    .hero {
+        padding: 0 0 12px;
+    }
+
+    .hero__title {
+        font-size: 30px;
+    }
+
+    .hero__roles,
+    .hero__lede {
+        font-size: 14px;
+        margin-top: 8px;
+    }
+
+    .hero__photo,
+    .hero__photo-fallback {
+        width: 96px;
+        height: 96px;
+    }
+
+    .hero__avatar {
+        margin-bottom: 12px;
+    }
+
+    .card,
+    .credential,
+    .project,
+    .stack-group,
+    .timeline > li {
+        padding: 12px 14px;
+    }
+
+    .projects,
+    .credentials,
+    .stack {
+        gap: 10px;
+    }
+
+    .timeline {
+        gap: 10px;
+    }
+
+    .meter {
+        margin-top: 10px;
+        padding-top: 8px;
     }
 }
