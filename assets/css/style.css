@@ -24,6 +24,14 @@
     --blue: #3b82f6;
     --green: #a3e635;
 
+    /* Fill-only accents for chips that carry dark text. Unlike the tokens
+       above these are never redefined for the light theme: the light theme
+       darkens the accents so they can be read on white, which would drop dark
+       text on them to ~3.5:1. Keep them saturated in both themes. */
+    --fill-gold: #f5d94d;
+    --fill-cyan: #40d4ff;
+    --fill-blue: #3b82f6;
+
     --radius-sm: 8px;
     --radius: 14px;
     --radius-lg: 22px;
@@ -283,7 +291,7 @@ ul {
     width: 34px;
     height: 34px;
     border-radius: 11px;
-    background: linear-gradient(135deg, var(--cyan), var(--blue));
+    background: linear-gradient(135deg, var(--fill-cyan), var(--fill-blue));
     color: #04121a;
     font-size: 13px;
     font-weight: 800;
@@ -847,7 +855,7 @@ main {
     content: '▹';
     position: absolute;
     left: 0;
-    color: var(--gold);
+    color: var(--gold-ink);
 }
 
 .group strong {
@@ -918,7 +926,7 @@ main {
 }
 
 .timeline__period {
-    color: var(--gold);
+    color: var(--gold-ink);
     font-family: 'JetBrains Mono', monospace;
     font-size: 12.5px;
     white-space: nowrap;
@@ -1051,6 +1059,23 @@ html[data-theme='light'] .tag {
 .project h3 a {
     color: var(--text);
     text-decoration: none;
+    /* Pad the tap area to the 24px minimum without moving anything: the
+       negative margin cancels the padding so the text stays put. */
+    display: inline-block;
+    padding: 3px 0;
+    margin: -3px 0;
+}
+
+/* Inline links inside prose (footer, no-JS fallback) are only as tall as the
+   line box, which leaves them under the 24px minimum tap target on a phone.
+   The vertical padding enlarges the hit area; the equal negative margin keeps
+   the text on its original baseline, and the block padding widens it slightly
+   so the target is comfortable to hit. */
+.footer__inner p a,
+.noscript a {
+    display: inline-block;
+    padding: 3px 2px;
+    margin: -3px -2px;
 }
 
 .project h3 a:hover {
@@ -1278,7 +1303,7 @@ html[data-theme='light'] .stack-group li {
 .hero__photo-fallback {
     display: grid;
     place-items: center;
-    background: linear-gradient(135deg, var(--gold), var(--cyan));
+    background: linear-gradient(135deg, var(--fill-gold), var(--fill-cyan));
     color: #05070a;
     font-size: 60px;
     font-weight: 800;
@@ -1365,7 +1390,7 @@ html[data-theme='light'] .meter__bar {
     width: 52px;
     height: 52px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--gold), var(--cyan));
+    background: linear-gradient(135deg, var(--fill-gold), var(--fill-cyan));
     color: #05070a;
     font-size: 15px;
     font-weight: 800;
