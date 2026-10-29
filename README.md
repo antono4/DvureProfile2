@@ -1,8 +1,8 @@
 # Portfolio / engineering resume — static site
 
 A single-page portfolio for Antono — dark, glassmorphic, gold + cyan accents,
-sticky pill navigation, scroll progress bar, cursor spotlight and
-reveal-on-scroll.
+sticky pill navigation, scroll progress bar, cursor spotlight, reveal-on-scroll
+and a drifting rain-and-snow weather layer behind the content.
 
 Content is based on `https://antono4.github.io/`. The visual style follows the
 glassmorphic dark aesthetic of `dvurechensky.github.io`.
@@ -11,7 +11,7 @@ No build step, no framework, no dependencies to install. Plain HTML, CSS and
 JavaScript, so it deploys anywhere that serves files — including GitHub Pages.
 
 ```
-index.html                 page shell (structure and sections)
+index.html                 page shell (structure, sections, decorative canvas)
 assets/css/style.css       design system: tokens, layout, components, responsive
 assets/css/fonts.css       @font-face rules for the self-hosted web fonts
 assets/js/app.js           renders content and wires up the interactions
@@ -61,9 +61,38 @@ Two things worth knowing:
   executed, so a stray tag in the data file cannot break or hijack the page.
 
 To change the accent colours, edit the tokens at the top of
-`assets/css/style.css` (`--gold`, `--cyan`, `--blue`, `--green`). The light theme
-is a separate token block under `html[data-theme='light']`. Dark is the default;
-the toggle in the top bar switches to light and remembers the choice.
+`assets/css/style.css`. There are three families, and the difference matters:
+
+| Family | Tokens | Used for |
+| --- | --- | --- |
+| Accents | `--gold`, `--cyan`, `--blue`, `--green` | Borders, glows, bars and **text on the page background** |
+| Ink | `--gold-ink`, `--cyan-ink` | Accent-coloured **text**; the lighter/darker partner of the accent above |
+| Fills | `--fill-gold`, `--fill-cyan`, `--fill-blue` | **Backgrounds of chips that carry dark text** — the brand mark, credential seals and the top-bar buttons |
+
+The light theme is a separate token block under `html[data-theme='light']`. It
+redefines the accent and ink tokens, but deliberately **not** the `--fill-*`
+tokens — that is the whole point of the third family. An accent dark enough to be
+readable *on* white is too dark for dark text to sit *on top of*; using one there
+drops contrast to roughly 3.5:1, below the 4.5:1 that WCAG AA asks for. Fills stay
+saturated in both themes so their dark text stays legible. If you add a chip with
+dark text on it, reach for a `--fill-*` token, never `--gold` or `--cyan` directly.
+
+Dark is the default; the toggle in the top bar switches to light and remembers the
+choice.
+
+### Top-bar buttons
+
+The top bar carries two pill buttons next to the theme toggle. Both are plain
+`<a>` elements using the `gh-btn` class for shape, spacing and responsive
+behaviour; the second adds `profile-btn`, which only recolours it.
+
+| Button | Class | Links to |
+| --- | --- | --- |
+| AntonoProfile | `gh-btn profile-btn` | `https://antono4.github.io/AntonoProfile` |
+| GitHub | `gh-btn` | `https://github.com/antono4` |
+
+Edit the `href` values directly in `index.html`. Below 860px the labels are hidden
+and only the icons remain, so the bar still fits on a phone.
 
 ### Images
 
@@ -86,6 +115,31 @@ preview image must be PNG or JPEG (an SVG will not render).
 
 All paths in `index.html` are relative, so it works both at a domain root and in
 a repository subfolder without changes.
+
+## The weather layer
+
+`index.html` contains one decorative element: `<canvas class="weather">`, painted
+by the `weather()` function in `assets/js/app.js`. It draws a light rain of cyan
+streaks plus a few drifting gold snowflakes. Each particle has a `depth` used for
+parallax, so nearer ones are longer, faster and brighter than distant ones.
+
+It is built to stay cheap and never get in the way:
+
+- **Behind everything.** The canvas is `position: fixed; z-index: -1`, above the
+  grid and gradient washes (which sit at `-3` and `-2`) but below all content, and
+  it has `pointer-events: none` so it cannot intercept a click.
+- **Capped work.** Particle counts scale with viewport area but top out at 150
+  drops and 46 flakes, and `devicePixelRatio` is capped at 2, so a 4K display does
+  not pay several times the cost of a phone.
+- **Pauses when unseen.** The animation stops on `visibilitychange` while the tab
+  is hidden and resumes when it returns.
+- **Skipped under `prefers-reduced-motion: reduce`.** The canvas then stays empty
+  rather than animating.
+- **Theme aware.** Particle opacity drops in the light theme so the effect does not
+  muddy the white background.
+
+To remove it, delete the `<canvas>` element and the `weather()` call in the boot
+section of `app.js`. Nothing else depends on it.
 
 ## Notes on behaviour and accessibility
 
@@ -110,7 +164,35 @@ a repository subfolder without changes.
 
 ## Tests
 
-The page logic is covered by a DOM test suite (rendering, filtering, empty state,
-XSS sanitising, theme persistence) plus a real-browser audit that checks for
-console errors, horizontal overflow and broken scroll behaviour at desktop,
-tablet and mobile widths.
+The page is covered by ten suites, all of which must pass:
+
+| Suite | Covers |
+| --- | --- |
+| `data` | Content integrity — every entry in `profile.js` renders, no gaps |
+| `validate` | HTML structure, CSS parsing, and that every referenced asset exists |
+| `test` | DOM logic — rendering, filtering, empty state, XSS sanitising, theme persistence |
+| `browser` | Real-browser audit at desktop, tablet and mobile widths |
+| `a11y` | Contrast in **both** themes, reduced motion, reflow at 200% zoom, skip link |
+| `links` | Every external URL and `mailto` resolves |
+| `perf` | Page weight, request count, script placement and first paint |
+| `print` | The printed CV: no blank pages, dark-on-white, chrome hidden |
+| `edge` | Filters, theme persistence, scroll spy, overflow 320–1920px, tap targets |
+| `verify_contrast` | The specific contrast fixes, in both themes |
+
+Two testing notes worth keeping, because both cost real time to learn:
+
+- **Measure contrast from painted pixels, not computed styles.** Computed colours
+  lie about translucent panels and gradients. The reliable method is to screenshot
+  an element twice — once normally, once with `color: transparent` — and compare
+  each changed pixel against *the same pixel* of the text-free render, which is its
+  true local background. Score the ~20th percentile of those ratios: the single
+  worst pixel is always an antialiased glyph edge, and it always "fails".
+- **Scroll state breaks screenshot tooling.** This page sets
+  `html { scroll-behavior: smooth }` and `body { overflow: hidden auto }`, so
+  `scrollIntoView` is asynchronous and `body` — not the document — is the scroller.
+  Either force `scrollBehavior = 'auto'` and assign
+  `document.scrollingElement.scrollTop`, or size the viewport to the full document
+  height so nothing scrolls at all.
+
+The test scripts are not committed; they live in a scratch directory while
+developing.

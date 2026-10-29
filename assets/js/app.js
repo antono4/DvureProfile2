@@ -376,6 +376,153 @@
         );
     };
 
+    /* ---------- weather ----------
+       A calm rain-and-snow drift painted on a fixed canvas behind the page.
+       Purely decorative: the canvas is aria-hidden and never carries text.
+
+       Notes:
+       - Particle counts scale with area but are capped, so a 4K screen does not
+         pay for four times the work of a phone.
+       - devicePixelRatio is capped at 2: past that the extra pixels are
+         invisible while the fill cost keeps climbing.
+       - Nothing runs while the tab is hidden, and the whole effect is skipped
+         under prefers-reduced-motion (the canvas then stays empty). */
+    const weather = () => {
+        const canvas = $('.weather');
+        if (!canvas || !canvas.getContext) return;
+        if (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) return;
+
+        // getContext returns null when canvas is unavailable — not just in
+        // jsdom, but in real browsers where it is blocked for fingerprinting.
+        // Bail before touching it, or the throw would abort the whole boot.
+        let ctx;
+        try {
+            ctx = canvas.getContext('2d');
+        } catch {
+            return;
+        }
+        if (!ctx) return;
+
+        const DPR = Math.min(window.devicePixelRatio || 1, 2);
+        const GOLD = '245, 217, 77';
+        const CYAN = '64, 212, 255';
+
+        // The canvas sits behind the text, so a particle can land directly
+        // behind a glyph and raise the background it is read against. Alpha is
+        // therefore capped by contrast, not by taste: two particles may overlap
+        // a single glyph, which composites to 1-(1-a)^2, and the dimmest body
+        // text (--muted) must still reach 4.5:1 against the result. At 0.09 the
+        // worst case is 4.70:1 in the dark theme and 4.77:1 in the light one.
+        // Raising this without re-checking will break WCAG AA.
+        const MAX_ALPHA = 0.09;
+        let w = 0;
+        let h = 0;
+        let drops = [];
+        let flakes = [];
+        let raf = 0;
+
+        const isLight = () => document.documentElement.dataset.theme === 'light';
+
+        const seed = () => {
+            const area = w * h;
+            const dropCount = Math.min(150, Math.round(area / 13000));
+            const flakeCount = Math.min(46, Math.round(area / 42000));
+
+            drops = Array.from({ length: dropCount }, () => {
+                // depth drives parallax: nearer drops are longer, faster, brighter
+                const depth = 0.35 + Math.random() * 0.65;
+                return {
+                    x: Math.random() * w,
+                    y: Math.random() * h,
+                    depth,
+                    len: 7 + depth * 15,
+                    vy: (110 + depth * 210) / 60,
+                    vx: -0.28,
+                };
+            });
+
+            flakes = Array.from({ length: flakeCount }, () => {
+                const depth = 0.3 + Math.random() * 0.7;
+                return {
+                    x: Math.random() * w,
+                    y: Math.random() * h,
+                    depth,
+                    r: 0.7 + depth * 1.7,
+                    vy: (16 + depth * 34) / 60,
+                    phase: Math.random() * Math.PI * 2,
+                    wobble: 0.5 + depth * 0.9,
+                };
+            });
+        };
+
+        const resize = () => {
+            w = window.innerWidth;
+            h = window.innerHeight;
+            canvas.width = Math.round(w * DPR);
+            canvas.height = Math.round(h * DPR);
+            ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+            seed();
+        };
+
+        const frame = () => {
+            raf = requestAnimationFrame(frame);
+            ctx.clearRect(0, 0, w, h);
+            const light = isLight();
+            const t = performance.now() / 1000;
+
+            ctx.lineCap = 'round';
+            for (const d of drops) {
+                d.y += d.vy;
+                d.x += d.vx * d.depth;
+                if (d.y > h + d.len) {
+                    d.y = -d.len;
+                    d.x = Math.random() * w;
+                }
+                if (d.x < -d.len) d.x = w + d.len;
+                ctx.strokeStyle = `rgba(${CYAN}, ${(light ? 0.075 : MAX_ALPHA) * d.depth})`;
+                ctx.lineWidth = 0.6 + d.depth * 1.1;
+                ctx.beginPath();
+                ctx.moveTo(d.x, d.y);
+                ctx.lineTo(d.x + d.vx * 3, d.y + d.len);
+                ctx.stroke();
+            }
+
+            for (const f of flakes) {
+                f.y += f.vy;
+                f.x += Math.sin(t * 0.6 + f.phase) * f.wobble * 0.5;
+                if (f.y > h + f.r) {
+                    f.y = -f.r;
+                    f.x = Math.random() * w;
+                }
+                if (f.x < -f.r) f.x = w + f.r;
+                else if (f.x > w + f.r) f.x = -f.r;
+                ctx.fillStyle = `rgba(${GOLD}, ${(light ? 0.08 : MAX_ALPHA) * f.depth})`;
+                ctx.beginPath();
+                ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        };
+
+        const start = () => {
+            if (!raf) raf = requestAnimationFrame(frame);
+        };
+        const stop = () => {
+            if (raf) {
+                cancelAnimationFrame(raf);
+                raf = 0;
+            }
+        };
+
+        resize();
+        start();
+
+        window.addEventListener('resize', resize);
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) stop();
+            else start();
+        });
+    };
+
     const theme = () => {
         const button = $('[data-theme-toggle]');
         const root = document.documentElement;
@@ -467,6 +614,7 @@
     if (year) year.textContent = String(new Date().getFullYear());
 
     theme();
+    weather();
     scrollProgress();
     spotlight();
     navHighlight();

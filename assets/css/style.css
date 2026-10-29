@@ -99,6 +99,19 @@ body {
     overflow-x: hidden;
 }
 
+/* Weather canvas: the topmost decorative layer, still behind all content.
+   z-index -1 puts it above the grid (-3) and the gradient/spotlight wash (-2)
+   so the particles read as weather in the sky, not as a filter over the page.
+   pointer-events: none keeps it from intercepting clicks. */
+.weather {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
 /* Fixed decorative layers: grid + gradient wash + cursor spotlight */
 body::before,
 body::after {
@@ -419,6 +432,20 @@ html[data-theme='light'] .icon-btn {
 .gh-btn svg {
     width: 16px;
     height: 16px;
+}
+
+/* Second top-bar button, linking to the other portfolio site. Same shape and
+   responsive behaviour as .gh-btn; only the fill differs. Dark text on a vivid
+   gradient, matching the other chips, so it is legible in both themes. */
+.profile-btn {
+    background: linear-gradient(135deg, var(--fill-gold), #ffb347);
+    color: #1a1300;
+    box-shadow: 0 0 0 1px rgba(245, 217, 77, 0.42), 0 8px 22px rgba(245, 217, 77, 0.26);
+}
+
+.profile-btn:hover {
+    color: #1a1300;
+    box-shadow: 0 0 0 1px rgba(245, 217, 77, 0.62), 0 12px 28px rgba(245, 217, 77, 0.44);
 }
 
 /* ---------- Shared layout ---------- */
