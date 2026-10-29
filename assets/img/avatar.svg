@@ -13,5 +13,5 @@
   <g fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1">
     <path d="M0 128h512M0 256h512M0 384h512M128 0v512M256 0v512M384 0v512"/>
   </g>
-  <text x="256" y="300" text-anchor="middle" font-family="Inter, Helvetica, Arial, sans-serif" font-size="190" font-weight="800" fill="url(#accent)">ND</text>
+  <text x="256" y="300" text-anchor="middle" font-family="Inter, Helvetica, Arial, sans-serif" font-size="190" font-weight="800" fill="url(#accent)">A</text>
 </svg>
