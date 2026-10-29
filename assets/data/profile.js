@@ -45,7 +45,7 @@ window.SITE = {
             href: 'mailto:dvurechenskysoft@gmail.com',
         },
         { label: 'Email', value: 'nikolay@dvurechensky.pro', href: 'mailto:nikolay@dvurechensky.pro' },
-        { label: 'GitHub', value: 'github.com/Dvurechensky', href: 'https://github.com/Dvurechensky' },
+        { label: 'GitHub', value: 'github.com/Antono4', href: 'https://github.com/Antono4' },
         { label: 'ORCID', value: '0009-0004-2701-5592', href: 'https://orcid.org/0009-0004-2701-5592' },
     ],
 
