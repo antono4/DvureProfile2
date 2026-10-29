@@ -13,9 +13,11 @@ JavaScript, so it deploys anywhere that serves files — including GitHub Pages.
 ```
 index.html                 page shell (structure and sections)
 assets/css/style.css       design system: tokens, layout, components, responsive
+assets/css/fonts.css       @font-face rules for the self-hosted web fonts
 assets/js/app.js           renders content and wires up the interactions
 assets/data/profile.js     ALL the content — this is the file you edit
 assets/img/                favicon and avatar placeholders
+assets/fonts/              Inter + JetBrains Mono woff2 files (304 KB total)
 ```
 
 ## Run it locally
@@ -85,8 +87,9 @@ a repository subfolder without changes.
   a real `<button>` with an accessible label.
 - Prints cleanly: chrome, filters and decorative layers are hidden, and content
   is switched to dark-on-white.
-- No tracking, no cookies, no external requests beyond the Google Fonts
-  stylesheet. Remove that `<link>` if you would rather self-host the fonts.
+- No tracking, no cookies, and no external requests at all: the Inter and
+  JetBrains Mono web fonts are self-hosted under `assets/fonts/` and declared in
+  `assets/css/fonts.css`. The page works fully offline.
 
 ## Tests
 
