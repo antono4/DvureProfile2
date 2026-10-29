@@ -1,9 +1,11 @@
 # Portfolio / engineering resume — static site
 
-A single-page portfolio in the style of
-`https://dvurechensky.github.io/Dvurechensky/` — dark, glassmorphic, gold + cyan
-accents, sticky pill navigation, scroll progress bar, cursor spotlight and
+A single-page portfolio for Antono — dark, glassmorphic, gold + cyan accents,
+sticky pill navigation, scroll progress bar, cursor spotlight and
 reveal-on-scroll.
+
+Content is based on `https://antono4.github.io/`. The visual style follows the
+glassmorphic dark aesthetic of `dvurechensky.github.io`.
 
 No build step, no framework, no dependencies to install. Plain HTML, CSS and
 JavaScript, so it deploys anywhere that serves files — including GitHub Pages.
